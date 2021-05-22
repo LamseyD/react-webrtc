@@ -5,7 +5,7 @@ interface NavbarProps {
 
 }
 
-export const Navbar: React.FC<NavbarProps> = () => {
+const Navbar: React.FC<NavbarProps> = () => {
     //data is loading
     return (
         <Flex zIndex={5} position="sticky" top={0} bg='#7289da' p={4} align="center">
@@ -23,3 +23,5 @@ export const Navbar: React.FC<NavbarProps> = () => {
 
     );
 }
+
+export default Navbar;
