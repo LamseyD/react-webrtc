@@ -47,5 +47,9 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@types/react-copy-to-clipboard": "^5.0.0",
+    "@types/simple-peer": "^9.6.3"
   }
 }
