@@ -1,13 +1,13 @@
 import React, { createContext, useState, useRef, useEffect } from 'react'
 import { io } from 'socket.io-client';
 import Peer from 'simple-peer';
-import { SocketContextType, CallInfo, VideoRef } from '../types';
+import { SocketContextType, CallInfo } from '../types';
 
 const SocketContext = createContext<SocketContextType>({
     callInfo: null,
     callAccepted: false,
-    videoRef: null,
-    userVideoRef: null,
+    videoRef: undefined,
+    userVideoRef: undefined,
     mediaStream: undefined,
     name: '',
     setName: () => {},
@@ -27,9 +27,9 @@ const SocketProvider: React.FC = ({ children }: any) => {
     const [callAccepted, setCallAccepted] = useState<boolean>(false)
     const [callEnded, setCallEnded] = useState<boolean>(false);
     const [name, setName] = useState<string>('');
-    const videoRef = useRef<VideoRef>(null);
-    const userVideoRef = useRef<VideoRef>(null);
-    const connectionRef = useRef<any>(null);
+    const videoRef = useRef<HTMLVideoElement>();
+    const userVideoRef = useRef<HTMLVideoElement>();
+    const connectionRef = useRef<any>();
 
     useEffect(() => {
         async function enableStream() {
@@ -42,15 +42,16 @@ const SocketProvider: React.FC = ({ children }: any) => {
                 if (videoRef && videoRef.current) {
                     videoRef.current.srcObject = stream;
                 }
-                socket.on('me', (id) => setUser(id));
-                socket.on('calluser', ({ from, name: callerName, signal }) => {
+                socket.on('ME', (id) => setUser(id));
+                socket.on('CALL_USER', ({ from, name: callerName, signal }) => {
                     setCallInfo({ isReceivedCall: true, from, name: callerName, signal })
                 })
             } catch (err) {
                 console.log("error: Failing to request media devices. \n", err)
             }
         }
-        enableStream();
+        if (!mediaStream)
+            enableStream();
         
         //! Possible clean up function
         //  return function cleanup() {
@@ -58,7 +59,7 @@ const SocketProvider: React.FC = ({ children }: any) => {
         //          track.stop();
         //      });
         //  }
-    }, []);
+    });
 
     const answerCall = () => {
         setCallAccepted(true);
@@ -81,7 +82,9 @@ const SocketProvider: React.FC = ({ children }: any) => {
 
     const callUser = (id: string) => {
         const peer = new Peer({ initiator: false, trickle: false, stream: mediaStream });
+
         peer.on('signal', (data: any) => {
+            console.log("SIGNAL");
             socket.emit('CALL_USER', { userToCall: id, signalData: data, from: user, name });
         })
 
@@ -109,8 +112,8 @@ const SocketProvider: React.FC = ({ children }: any) => {
         <SocketContext.Provider value={{
             callInfo,
             callAccepted,
-            videoRef: videoRef.current,
-            userVideoRef: userVideoRef.current,
+            videoRef: videoRef,
+            userVideoRef: userVideoRef,
             mediaStream,
             name,
             setName,
