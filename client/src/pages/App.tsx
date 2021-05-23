@@ -9,9 +9,9 @@ import Notifications from '../components/Notifications';
 const App: React.FC = () => {
   return (
     <ChakraProvider>
-      <Flex bg="#1c1c1e" flexDirection="column" height="100vh">
-        <Navbar />
-        <Flex flexDirection="column">
+      <Flex bg="#1c1c1e" flexDirection="row" minHeight="100vh">
+        <Navbar/>
+        <Flex flexDirection="column" justifyContent="center" flexGrow={3}>
           <VideoPlayer />
           <Options>
             <Notifications />
