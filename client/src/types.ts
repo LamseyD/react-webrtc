@@ -8,8 +8,8 @@ export type CallInfo = {
 export type SocketContextType = {
     callInfo: CallInfo | null,
     callAccepted: boolean,
-    videoRef: VideoRef,
-    userVideoRef: VideoRef,
+    videoRef: React.MutableRefObject<HTMLVideoElement | undefined> | undefined,
+    userVideoRef: React.MutableRefObject<HTMLVideoElement | undefined> | undefined,
     mediaStream: MediaStream | undefined,
     name: string,
     setName: any,
@@ -19,5 +19,3 @@ export type SocketContextType = {
     leaveCall: any,
     answerCall: any
 };
-
-export type VideoRef = HTMLVideoElement | null;
