@@ -30,7 +30,7 @@ const main = async () => {
             io.to(userToCall).emit("CALL_USER", { signal: signalData, from, name });
         })
         socket.on("ANSWER_CALL", (data) => {
-            io.to(data.to).emit("CALL_ACCEPTED")
+            io.to(data.to).emit("CALL_ACCEPTED", data.signal)
         })
     })
 
